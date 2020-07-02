@@ -15,7 +15,11 @@ class UsersRepository {
       user.name,
       user.is_enabled
     ]);
-    return { id: result.insertedId, ...user };
+
+    if (result.affectedRows)
+      return { id: result.insertedId, ...user };
+
+    return null;
   }
 }
 

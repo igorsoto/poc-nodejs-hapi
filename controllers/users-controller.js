@@ -1,41 +1,6 @@
-class ResponseBase {
-  constructor(statusCode, data) {
-    this.statusCode = statusCode;
-    this.data = data;
-  }
-}
+const ControllerBase = require("./controller-base");
 
-class OkResponse extends ResponseBase {
-  constructor(data) {
-    super(200, data)
-  }
-}
-
-class NotFoundResponse extends ResponseBase {
-  constructor(data) {
-    super(404, data)
-  }
-}
-
-class InternalServerErrorResponse extends ResponseBase {
-  constructor(data) {
-    super(500, data)
-  }
-}
-
-class ControllerBase {
-  ok(data) {
-    return new OkResponse(data);
-  }
-  notFound(message) {
-    return new NotFoundResponse({ message });
-  }
-  internalServerError(message) {
-    return new this.internalServerError({ message });
-  }
-}
-
-class UsersController extends ControllerBase {
+module.exports = class UsersController extends ControllerBase {
   constructor(usersRepository) {
     super();
     this.usersRepository = usersRepository;
@@ -52,14 +17,12 @@ class UsersController extends ControllerBase {
   }
 
   async post(user) {
-    const affectedRows = await this.usersRepository.create(user);
+    const createdUser = await this.usersRepository.create(user);
 
-    if (!affectedRows) {
+    if (!createdUser) {
       return this.internalServerError("Fail to create user");
     }
 
-    return this.ok(user);
+    return this.ok(createdUser);
   }
 }
-
-module.exports = UsersController;
